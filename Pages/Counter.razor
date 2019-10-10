@@ -1,0 +1,38 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using MyComponents
+
+@page "/counter"
+
+<h1>@ShowDemo</h1>
+
+<EditForm Model="@model" OnValidSubmit="@SaveItem">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <MyValidationSneak UpdateDelegate="@( (ctx)=>UpdateUI(ctx) )" /> 
+    <InputText id="ItemName" @bind-Value="@model.ItemName" />
+    <ValidationMessage For="@(() => model.ItemName)" />
+    <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+
+    string ShowDemo = "res de res";
+
+    protected void UpdateUI(EditContext ctx)
+    {
+        FieldIdentifier _fieldIdentifier = FieldIdentifier.Create( () => model.ItemName );
+        ShowDemo = string.Join(", ", ctx.GetValidationMessages(_fieldIdentifier) );
+    }
+    
+    ItemModel model = new ItemModel();
+
+    private void SaveItem() { }
+    
+    public class ItemModel
+    {
+        [Required]
+        public string ItemName{ get; set; }
+        [Required]
+        public string ItemAdress{ get; set; }
+    }
+}
